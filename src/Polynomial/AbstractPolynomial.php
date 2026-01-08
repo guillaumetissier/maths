@@ -113,39 +113,6 @@ class AbstractPolynomial implements \Stringable, StringParsable, PolynomialInter
 
     protected function division(PolynomialInterface $divisor): array
     {
-        //        $dividendDegree = $this->deg();
-        //        $divisorDegree = $divisor->deg();
-        //
-        //        if ($dividendDegree < $divisorDegree) {
-        //            return [
-        //                'quotient' => [RationalImmutable::zero()],
-        //                'remainder' => $this->coefficients,
-        //            ];
-        //        }
-        //
-        //        $quotientDegree = $dividendDegree - $divisorDegree;
-        //        $quotient = array_fill(0, $quotientDegree + 1, RationalImmutable::zero());
-        //        $remainder = $this->coefficients;
-        //
-        //        for ($i = $dividendDegree; $i >= $divisorDegree; --$i) {
-        //            $quotientCoef = $remainder[$i]->div($divisor->dominantCoef());
-        //            $quotientIndex = $i - $divisorDegree;
-        //            $quotient[$quotientIndex] = $quotientCoef;
-        //
-        //            for ($j = 0; $j <= $divisorDegree; ++$j) {
-        //                $remainder[$i - $divisorDegree + $j] = $remainder[$i - $divisorDegree + $j]->sub(
-        //                    $quotientCoef->mul($divisor->coef($j))
-        //                );
-        //            }
-        //        }
-        //
-        //        $remainder = array_slice($remainder, 0, $divisorDegree);
-        //
-        //        return [
-        //            'quotient' => $quotient,
-        //            'remainder' => $remainder,
-        //        ];
-
         $dividendDegree = $this->deg();
         $divisorDegree = $divisor->deg();
 
@@ -198,7 +165,6 @@ class AbstractPolynomial implements \Stringable, StringParsable, PolynomialInter
             return $this->zeroPolynomial();
         }
 
-        // Supprimer les zéros en tête (plus haut degré)
         while (count($coefficients) > 1 && end($coefficients)->isZero()) {
             array_pop($coefficients);
         }
