@@ -99,7 +99,7 @@ final class RationalImmutableTest extends TestCase
         yield [RationalImmutable::parse('-13/4'), Decimal::parse('-3.25'), 0];
         yield [RationalImmutable::parse('2/5'), Rational::of(4, 7), -1];
         yield [RationalImmutable::parse('12/5'), Rational::of(13, 7), 1];
-        yield [RationalImmutable::parse('19/7'), Rational::of(38, 14), 0];
+        yield [RationalImmutable::parse('19/7'), RationalImmutable::of(38, 14), 0];
     }
 
     public function testJsonSerialize(): void

@@ -37,6 +37,11 @@ abstract class AbstractRational implements RationalInterface, \JsonSerializable,
         $this->canonicalize($numerator, $denominator);
     }
 
+    public static function zero(): static
+    {
+        return new static(0, 1);
+    }
+
     public static function of(int $numerator, int $denominator = 1): static
     {
         return new static($numerator, $denominator);
@@ -48,6 +53,13 @@ abstract class AbstractRational implements RationalInterface, \JsonSerializable,
 
         if (preg_match('#^(-?\d+)\s*/\s*(-?\d+)$#', $value, $matches)) {
             return new static((int) $matches[1], (int) $matches[2]);
+        }
+
+        if (preg_match('#^(-?\d+)\s*\.\s*(-?\d+)$#', $value, $matches)) {
+            $length = strlen($value);
+            $pointPosition = strpos($value, '.');
+
+            return new static(intval(str_replace('.', '', $value)), 10 ** ($length - $pointPosition - 1));
         }
 
         if (preg_match('#^-?\d+$#', $value)) {
@@ -77,6 +89,11 @@ abstract class AbstractRational implements RationalInterface, \JsonSerializable,
     public function denominator(): int
     {
         return $this->denominator;
+    }
+
+    public function isZero(): bool
+    {
+        return 0 === $this->numerator;
     }
 
     public function compare(ComparableNumber $other): int

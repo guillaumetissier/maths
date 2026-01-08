@@ -42,6 +42,9 @@ final class RationalTest extends TestCase
         yield [Rational::parse('6 / 8'), 3, 4];
         yield [Rational::parse('7/-5'), -7, 5];
         yield [Rational::parse('-34/ 51'), -2, 3];
+        yield [Rational::parse('-5.3'), -53, 10];
+        yield [Rational::parse('34.51'), 3451, 100];
+        yield [Rational::parse('34.50000'), 69, 2];
     }
 
     public function testParseInvalidFormat(): void
@@ -82,6 +85,8 @@ final class RationalTest extends TestCase
         yield [Rational::parse('2/5'), Rational::of(4, 7), -1];
         yield [Rational::parse('12/5'), Rational::of(13, 7), 1];
         yield [Rational::parse('19/7'), Rational::of(38, 14), 0];
+        yield [Rational::parse('3.4'), RationalImmutable::of(17, 5), 0];
+        yield [Rational::parse('3.4'), RationalImmutable::of(18, 5), -1];
     }
 
     public function testJsonSerialize(): void

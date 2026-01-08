@@ -15,6 +15,7 @@ composer.lock
 *.vscode/
 
 # PHPUnit
+.phpunit.result.cache
 phpunit.xml
 phpunit.xml.dist
 /tests/_output/
