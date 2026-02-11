@@ -1,5 +1,5 @@
 {
-  "name": "guillaumetissier/ma",
+  "name": "guillaumetissier/maths",
   "description": "A lightweight, object-oriented mathematics library for PHP, offering precise numeric abstractions (Rational, Real, Matrix, …) with explicit mutable and immutable APIs. ",
   "type": "library",
   "license": "MIT",
