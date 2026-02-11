@@ -133,7 +133,7 @@ class AbstractPolynomial implements \Stringable, StringParsable, PolynomialInter
         $result = [];
         for ($i = 0; $i <= $this->deg(); ++$i) {
             for ($j = 0; $j <= $multiplier->deg(); ++$j) {
-                $m = $this->coef($i)->mul($multiplier->coef($i));
+                $m = $this->coef($i)->mul($multiplier->coef($j));
                 if (isset($result[$i + $j])) {
                     $result[$i + $j] = $result[$i + $j]->add($m);
                 } else {

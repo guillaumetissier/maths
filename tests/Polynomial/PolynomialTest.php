@@ -107,6 +107,12 @@ class PolynomialTest extends TestCase
             Polynomial::parse('-1x^2 + 1'),
             '-x^4 + -x^3 + x + 1',
         ];
+
+        yield [
+            Polynomial::parse('x + 1'),
+            PolynomialImmutable::fromIntegers([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            'x^11 + x^10',
+        ];
     }
 
     /**
