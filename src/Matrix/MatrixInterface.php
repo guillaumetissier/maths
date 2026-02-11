@@ -9,7 +9,7 @@ namespace Guillaumetissier\Maths\Matrix;
  */
 interface MatrixInterface
 {
-    public static function zeros(int $rows, int $cols): MatrixInterface;
+    public static function zeros(int $numRows, int $numCols): MatrixInterface;
 
     public function rows(): int;
 
@@ -17,8 +17,14 @@ interface MatrixInterface
 
     public function get(int $row, int $col): float;
 
+    /**
+     * @return float[]
+     */
     public function row(int $row): array;
 
+    /**
+     * @return float[]
+     */
     public function column(int $col): array;
 
     public function transpose(): MatrixInterface;
@@ -27,5 +33,8 @@ interface MatrixInterface
 
     public function multiply(MatrixInterface $other): MatrixInterface;
 
+    /**
+     * @return float[][]
+     */
     public function toArray(): array;
 }

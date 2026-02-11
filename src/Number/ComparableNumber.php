@@ -2,7 +2,7 @@
 
 namespace Guillaumetissier\Maths\Number;
 
-interface ComparableNumber
+interface ComparableNumber extends Number
 {
     public function compare(ComparableNumber $other): int;
 }

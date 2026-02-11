@@ -10,7 +10,7 @@ use Guillaumetissier\Maths\Number\DivisibleNumber;
 use Guillaumetissier\Maths\Number\MultiplicativeNumber;
 use Guillaumetissier\Maths\Number\SignedNumber;
 
-interface RationalInterface extends AdditiveNumber, ComparableNumber, DivisibleNumber, MultiplicativeNumber, SignedNumber
+interface RationalInterface extends AdditiveNumber, ComparableNumber, DivisibleNumber, MultiplicativeNumber, SignedNumber, \Stringable
 {
     public static function of(int $numerator, int $denominator = 1): static;
 
@@ -21,4 +21,6 @@ interface RationalInterface extends AdditiveNumber, ComparableNumber, DivisibleN
     public function toInt(): int;
 
     public function toFloat(): float;
+
+    public function isZero(): bool;
 }

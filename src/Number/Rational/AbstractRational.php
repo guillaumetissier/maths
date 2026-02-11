@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Guillaumetissier\Maths\Number\Rational;
 
+use Guillaumetissier\Maths\Exceptions\InvalidTypeException;
 use Guillaumetissier\Maths\Number\ComparableNumber;
 use Guillaumetissier\Maths\Number\CompareTrait;
 use Guillaumetissier\Maths\Number\Decimal\DecimalImmutable;
@@ -20,7 +21,7 @@ use Guillaumetissier\Maths\StringParsable;
  * Represents a number as numerator / denominator,
  * always kept in reduced form with a positive denominator.
  */
-abstract class AbstractRational implements RationalInterface, \JsonSerializable, \Stringable, StringParsable
+abstract class AbstractRational implements RationalInterface, \JsonSerializable, StringParsable
 {
     use CompareTrait;
 
@@ -28,7 +29,7 @@ abstract class AbstractRational implements RationalInterface, \JsonSerializable,
 
     protected int $denominator;
 
-    protected function __construct(int $numerator, int $denominator)
+    final protected function __construct(int $numerator, int $denominator)
     {
         if (0 === $denominator) {
             throw new \InvalidArgumentException('Denominator cannot be zero.');
@@ -96,14 +97,24 @@ abstract class AbstractRational implements RationalInterface, \JsonSerializable,
         return 0 === $this->numerator;
     }
 
+    /**
+     * @throws InvalidTypeException
+     */
     public function compare(ComparableNumber $other): int
     {
-        return match (true) {
-            $other instanceof IntegerInterface,
-            $other instanceof DecimalInterface => $this->compareRationals($this, $other->toRational()),
-            $other instanceof RationalInterface => $this->compareRationals($this, $other),
-            $other instanceof RealInterface => $this->compareReals($this->toReal(), $other),
-        };
+        if ($other instanceof IntegerInterface || $other instanceof DecimalInterface) {
+            return $this->compareRationals($this, $other->toRational());
+        }
+
+        if ($other instanceof RationalInterface) {
+            return $this->compareRationals($this, $other);
+        }
+
+        if ($other instanceof RealInterface) {
+            return $this->compareReals($this->toReal(), $other);
+        }
+
+        throw InvalidTypeException::cannotBeComparedTo($other);
     }
 
     public function toInteger(): IntegerImmutable
@@ -137,7 +148,7 @@ abstract class AbstractRational implements RationalInterface, \JsonSerializable,
         $multiplier = (10 ** $scale) / (($scale2 ? 2 ** $scale2 : 1) * ($scale5 ? 5 ** $scale5 : 1));
         $value = $num * $multiplier;
 
-        return DecimalImmutable::of($value, $scale);
+        return DecimalImmutable::of(intval($value), $scale);
     }
 
     public function toRational(): RationalImmutable

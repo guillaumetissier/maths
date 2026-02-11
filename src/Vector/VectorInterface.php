@@ -4,6 +4,9 @@ namespace Guillaumetissier\Maths\Vector;
 
 interface VectorInterface
 {
+    /**
+     * @param list<float|int> $components
+     */
     public static function fromArray(array $components): self;
 
     public static function zero(int $dimension): self;
@@ -14,6 +17,9 @@ interface VectorInterface
 
     public function get(int $index): float;
 
+    /**
+     * @return array<float>
+     */
     public function toArray(): array;
 
     /* ---------- Algebra ---------- */

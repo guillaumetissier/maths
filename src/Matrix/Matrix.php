@@ -12,9 +12,9 @@ final class Matrix extends AbstractMatrix
     public function transpose(): self
     {
         $this->data = $this->transpositionResult();
-        $oldRows = $this->rows;
-        $this->rows = $this->cols;
-        $this->cols = $oldRows;
+        $oldRows = $this->numRows;
+        $this->numRows = $this->numCols;
+        $this->numCols = $oldRows;
 
         return $this;
     }
@@ -29,7 +29,7 @@ final class Matrix extends AbstractMatrix
     public function multiply(MatrixInterface $other): self
     {
         $this->data = $this->multiplicationResult($other);
-        $this->cols = $other->cols();
+        $this->numCols = $other->cols();
 
         return $this;
     }

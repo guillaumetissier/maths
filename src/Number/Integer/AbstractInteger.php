@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Guillaumetissier\Maths\Number\Integer;
 
+use Guillaumetissier\Maths\Exceptions\InvalidTypeException;
+use Guillaumetissier\Maths\Exceptions\NotYetImplementedException;
 use Guillaumetissier\Maths\Number\ComparableNumber;
 use Guillaumetissier\Maths\Number\CompareTrait;
 use Guillaumetissier\Maths\Number\Decimal\DecimalImmutable;
@@ -18,7 +20,7 @@ abstract class AbstractInteger implements IntegerInterface, \JsonSerializable, S
 {
     use CompareTrait;
 
-    protected function __construct(protected int $value)
+    final protected function __construct(protected int $value)
     {
     }
 
@@ -43,18 +45,31 @@ abstract class AbstractInteger implements IntegerInterface, \JsonSerializable, S
         return $this->value;
     }
 
-    /** ----- ComparableNumber interface ----- */
+    /**
+     * @throws InvalidTypeException
+     * @throws NotYetImplementedException
+     */
     public function compare(ComparableNumber $other): int
     {
-        return match (true) {
-            $other instanceof IntegerInterface => $this->compareIntegers($this, $other->toInteger()),
-            $other instanceof DecimalInterface => $this->compareDecimals($this->toDecimal(), $other),
-            $other instanceof RationalInterface => $this->compareRationals($this->toRational(), $other),
-            $other instanceof RealInterface => $this->compareReals($this->toReal(), $other),
-        };
+        if ($other instanceof IntegerInterface) {
+            return $this->compareIntegers($this, $other->toInteger());
+        }
+
+        if ($other instanceof DecimalInterface) {
+            return $this->compareDecimals($this->toDecimal(), $other);
+        }
+
+        if ($other instanceof RationalInterface) {
+            return $this->compareRationals($this->toRational(), $other);
+        }
+
+        if ($other instanceof RealInterface) {
+            return $this->compareReals($this->toReal(), $other);
+        }
+
+        throw InvalidTypeException::cannotBeComparedTo($other);
     }
 
-    /** ---- Number Interface ---- */
     public function toInteger(): IntegerImmutable
     {
         return new IntegerImmutable($this->value);
@@ -70,18 +85,19 @@ abstract class AbstractInteger implements IntegerInterface, \JsonSerializable, S
         return RationalImmutable::of($this->value);
     }
 
+    /**
+     * @throws NotYetImplementedException
+     */
     public function toReal(): RealImmutable
     {
         return RealImmutable::parse((string) $this);
     }
 
-    /** ----- Stringable interface ----- */
     public function __toString(): string
     {
         return (string) $this->value;
     }
 
-    /** ----- JsonSerializable interface ----- */
     public function jsonSerialize(): string
     {
         return (string) $this->value;

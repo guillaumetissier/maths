@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Guillaumetissier\Maths\Tests\Number\Decimal;
 
+use Guillaumetissier\Maths\Exceptions\InvalidTypeException;
 use Guillaumetissier\Maths\Number\AdditiveNumber;
 use Guillaumetissier\Maths\Number\ComparableNumber;
 use Guillaumetissier\Maths\Number\Decimal\Decimal;
@@ -18,8 +19,6 @@ use PHPUnit\Framework\TestCase;
 
 final class DecimalImmutableTest extends TestCase
 {
-    /* ---------- Construction ---------- */
-
     public function testOfCreatesDecimal(): void
     {
         $d = DecimalImmutable::of(12345, 2);
@@ -53,18 +52,14 @@ final class DecimalImmutableTest extends TestCase
         yield ['-0.00243000', -243, 5, '-0.00243'];
     }
 
-    /* ---------- Value access ---------- */
-
     public function testValReturnsFloatApproximation(): void
     {
-        $d = DecimalImmutable::of(1, 3); // 0.001
-
-        $this->assertEquals(0.001, $d->val());
+        $this->assertEquals(0.001, DecimalImmutable::of(1, 3)->val());
     }
 
-    /* ---------- Comparison ---------- */
-
     /**
+     * @throws InvalidTypeException
+     *
      * @dataProvider dataCompareSameScale
      */
     public function testCompareSameScale(DecimalImmutable $d, ComparableNumber $other, int $expectedResult): void
@@ -79,8 +74,6 @@ final class DecimalImmutableTest extends TestCase
         yield [DecimalImmutable::of(2345, 4), DecimalImmutable::of(2345, 1), -1];
         yield [DecimalImmutable::of(98, 1), DecimalImmutable::of(98, 1), 0];
     }
-
-    /* ---------- Arithmetic ---------- */
 
     /**
      * @dataProvider dataAddition

@@ -9,11 +9,14 @@ use Guillaumetissier\Maths\StringParsable;
 class AbstractPolynomial implements \Stringable, StringParsable, PolynomialInterface
 {
     /**
-     * @var RationalImmutable[]
+     * @var RationalInterface[]
      */
     protected array $coefficients;
 
-    protected function __construct(array $coefficients)
+    /**
+     * @param array<RationalInterface> $coefficients
+     */
+    final protected function __construct(array $coefficients)
     {
         $this->coefficients = $coefficients;
     }
@@ -25,6 +28,10 @@ class AbstractPolynomial implements \Stringable, StringParsable, PolynomialInter
 
     public function deg(): int
     {
+        if (empty($this->coefficients)) {
+            return 0;
+        }
+
         return max(array_keys($this->coefficients));
     }
 
@@ -45,7 +52,7 @@ class AbstractPolynomial implements \Stringable, StringParsable, PolynomialInter
         for ($i = 0; $i <= $degree; ++$i) {
             $power = $degree - $i;
 
-            if (!$coefficient = $this->coefficients[$power]) {
+            if (null === ($coefficient = $this->coefficients[$power] ?? null)) {
                 continue;
             }
 
@@ -74,6 +81,9 @@ class AbstractPolynomial implements \Stringable, StringParsable, PolynomialInter
         return implode(' + ', array_filter($display, static fn ($coef) => !empty($coef)));
     }
 
+    /**
+     * @return array<RationalInterface>
+     */
     protected function addition(PolynomialInterface $polynomial): array
     {
         $result = [];
@@ -84,6 +94,9 @@ class AbstractPolynomial implements \Stringable, StringParsable, PolynomialInter
         return $result;
     }
 
+    /**
+     * @return array<RationalInterface>
+     */
     protected function subtraction(PolynomialInterface $polynomial): array
     {
         $result = [];
@@ -94,6 +107,9 @@ class AbstractPolynomial implements \Stringable, StringParsable, PolynomialInter
         return $result;
     }
 
+    /**
+     * @return array<RationalInterface>
+     */
     protected function multiplication(PolynomialInterface $multiplier): array
     {
         $result = [];
@@ -111,6 +127,12 @@ class AbstractPolynomial implements \Stringable, StringParsable, PolynomialInter
         return $result;
     }
 
+    /**
+     * @return array{
+     *      quotient: array<RationalInterface>,
+     *      remainder: array<RationalInterface>,
+     * }
+     */
     protected function division(PolynomialInterface $divisor): array
     {
         $dividendDegree = $this->deg();
@@ -149,16 +171,27 @@ class AbstractPolynomial implements \Stringable, StringParsable, PolynomialInter
         ];
     }
 
+    /**
+     * @return array<RationalInterface>
+     */
     private function zeroPolynomial(): array
     {
         return [RationalImmutable::zero()];
     }
 
+    /**
+     * @return array<RationalInterface>
+     */
     private function zeroPolynomialOfDegree(int $degree): array
     {
         return array_fill(0, $degree + 1, RationalImmutable::zero());
     }
 
+    /**
+     * @param array<RationalInterface> $coefficients
+     *
+     * @return array<RationalInterface>
+     */
     private function normalizeCoefficients(array $coefficients): array
     {
         if (empty($coefficients)) {

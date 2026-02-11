@@ -18,8 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class DecimalTest extends TestCase
 {
-    /* ---------- Construction ---------- */
-
     public function testOfCreatesDecimal(): void
     {
         $d = Decimal::of(12345, 2);
@@ -53,16 +51,10 @@ final class DecimalTest extends TestCase
         yield ['-0.00243000', -243, 5, '-0.00243'];
     }
 
-    /* ---------- Value access ---------- */
-
     public function testValReturnsFloatApproximation(): void
     {
-        $d = Decimal::of(1, 3); // 0.001
-
-        $this->assertEquals(0.001, $d->val());
+        $this->assertEquals(0.001, Decimal::of(1, 3)->val());
     }
-
-    /* ---------- Comparison ---------- */
 
     /**
      * @dataProvider dataCompareSameScale
@@ -79,8 +71,6 @@ final class DecimalTest extends TestCase
         yield [Decimal::of(2345, 4), Decimal::of(2345, 1), -1];
         yield [Decimal::of(98, 1), Decimal::of(9800, 3), 0];
     }
-
-    /* ---------- Arithmetic ---------- */
 
     /**
      * @dataProvider dataAddition

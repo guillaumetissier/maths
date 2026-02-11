@@ -11,7 +11,6 @@ use Guillaumetissier\Maths\Number\MultiplicativeNumber;
 
 final class IntegerImmutable extends AbstractInteger
 {
-    /** ---- AdditiveNumber Interface ---- */
     public function add(AdditiveNumber $other): static
     {
         return new self($this->value + $other->toInteger()->val());
@@ -22,15 +21,12 @@ final class IntegerImmutable extends AbstractInteger
         return new self($this->value - $other->toInteger()->val());
     }
 
-    /** ---- MultiplicativeNumber Interface ---- */
     public function mul(MultiplicativeNumber $other): static
     {
         return new self($this->value * $other->toInteger()->val());
     }
 
     /**
-     * ---- DivisibleNumber Interface ----.
-     *
      * @throws DivisionByZeroException
      */
     public function div(DivisibleNumber $other): static
@@ -42,7 +38,6 @@ final class IntegerImmutable extends AbstractInteger
         return new self(intdiv($this->value, $value));
     }
 
-    /** ---- SignedNumber Interface ---- */
     public function abs(): static
     {
         return new self(abs($this->value));

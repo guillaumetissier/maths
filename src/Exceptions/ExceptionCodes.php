@@ -10,4 +10,5 @@ class ExceptionCodes
     public const DivisionByZero = 2;
     public const ParseError = 3;
     public const NotYetImplemented = 4;
+    public const InvalidType = 5;
 }

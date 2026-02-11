@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Guillaumetissier\Maths\Tests\Number\Integer;
 
+use Guillaumetissier\Maths\Exceptions\InvalidTypeException;
+use Guillaumetissier\Maths\Exceptions\NotYetImplementedException;
 use Guillaumetissier\Maths\Number\AdditiveNumber;
 use Guillaumetissier\Maths\Number\ComparableNumber;
 use Guillaumetissier\Maths\Number\Decimal\Decimal;
@@ -18,8 +20,6 @@ use PHPUnit\Framework\TestCase;
 
 final class IntegerImmutableTest extends TestCase
 {
-    /* ---------- Construction ---------- */
-
     /**
      * @dataProvider dataCreation
      */
@@ -63,9 +63,9 @@ final class IntegerImmutableTest extends TestCase
         $this->assertEquals(1, $r->denominator());
     }
 
-    /* ---------- Comparison ---------- */
-
     /**
+     * @throws InvalidTypeException|NotYetImplementedException
+     *
      * @dataProvider dataCompare
      */
     public function testCompare(IntegerImmutable $d, ComparableNumber $other, int $expectedResult): void
@@ -86,8 +86,6 @@ final class IntegerImmutableTest extends TestCase
         yield [IntegerImmutable::of(23), Rational::of(91, 4), 1];
     }
 
-    /* ---------- Serialization ---------- */
-
     public function testJsonSerialize(): void
     {
         $this->assertSame('"-101"', json_encode(IntegerImmutable::parse('-101')));
@@ -97,8 +95,6 @@ final class IntegerImmutableTest extends TestCase
     {
         $this->assertSame('300', (string) IntegerImmutable::parse('300'));
     }
-
-    /* ---------- Arithmetic ---------- */
 
     /**
      * @dataProvider dataAddition

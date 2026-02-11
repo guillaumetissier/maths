@@ -3,6 +3,7 @@
 namespace Guillaumetissier\Maths\Number\Decimal;
 
 use Guillaumetissier\Maths\Exceptions\ConversionException;
+use Guillaumetissier\Maths\Exceptions\InvalidTypeException;
 use Guillaumetissier\Maths\Number\ComparableNumber;
 use Guillaumetissier\Maths\Number\CompareTrait;
 use Guillaumetissier\Maths\Number\Integer\IntegerImmutable;
@@ -21,7 +22,7 @@ abstract class AbstractDecimal implements DecimalInterface, \JsonSerializable, \
 
     protected int $scale;
 
-    protected function __construct(int $value, int $scale)
+    final protected function __construct(int $value, int $scale)
     {
         [$this->value, $this->scale] = $this->reduceDecimal($value, $scale);
     }
@@ -37,7 +38,7 @@ abstract class AbstractDecimal implements DecimalInterface, \JsonSerializable, \
         $pointPosition = strpos($value, '.');
 
         if (false === $pointPosition) {
-            return new static($value, 0);
+            return new static(intval($value), 0);
         }
 
         return new static(intval(str_replace('.', '', $value)), $length - $pointPosition - 1);
@@ -58,14 +59,28 @@ abstract class AbstractDecimal implements DecimalInterface, \JsonSerializable, \
         return floatval((string) $this);
     }
 
+    /**
+     * @throws InvalidTypeException
+     */
     public function compare(ComparableNumber $other): int
     {
-        return match (true) {
-            $other instanceof IntegerInterface => $this->compareDecimals($this, $other->toDecimal()),
-            $other instanceof DecimalInterface => $this->compareDecimals($this, $other),
-            $other instanceof RationalInterface => $this->compareRationals($this->toRational(), $other),
-            $other instanceof RealInterface => $this->compareReals($this->toReal(), $other),
-        };
+        if ($other instanceof IntegerInterface) {
+            return $this->compareDecimals($this, $other->toDecimal());
+        }
+
+        if ($other instanceof DecimalInterface) {
+            return $this->compareDecimals($this, $other);
+        }
+
+        if ($other instanceof RationalInterface) {
+            return $this->compareRationals($this->toRational(), $other);
+        }
+
+        if ($other instanceof RealInterface) {
+            return $this->compareReals($this->toReal(), $other);
+        }
+
+        throw InvalidTypeException::cannotBeComparedTo($other);
     }
 
     public function toInteger(): IntegerImmutable
@@ -117,6 +132,9 @@ abstract class AbstractDecimal implements DecimalInterface, \JsonSerializable, \
         return (string) $this;
     }
 
+    /**
+     * @return int[]
+     */
     protected function reduceDecimal(int $value, int $scale): array
     {
         while ($scale > 0 && 0 === $value % 10) {
@@ -127,6 +145,9 @@ abstract class AbstractDecimal implements DecimalInterface, \JsonSerializable, \
         return [$value, $scale];
     }
 
+    /**
+     * @return array{int, int}
+     */
     protected function addition(DecimalInterface $d): array
     {
         $maxScale = max($this->scale(), $d->scale());
@@ -137,6 +158,9 @@ abstract class AbstractDecimal implements DecimalInterface, \JsonSerializable, \
         ];
     }
 
+    /**
+     * @return array{int, int}
+     */
     protected function substraction(DecimalInterface $d): array
     {
         $maxScale = max($this->scale(), $d->scale());
@@ -147,6 +171,9 @@ abstract class AbstractDecimal implements DecimalInterface, \JsonSerializable, \
         ];
     }
 
+    /**
+     * @return array{int, int}
+     */
     protected function multiplication(DecimalInterface $d): array
     {
         return [
@@ -155,26 +182,12 @@ abstract class AbstractDecimal implements DecimalInterface, \JsonSerializable, \
         ];
     }
 
+    /**
+     * @return array{int, int}
+     */
     protected function division(RationalInterface $r): array
     {
         $result = $this->toRational()->div($r)->toDecimal();
-        //        $powers = [2 => 0, 5 => 0];
-        //        $numerator = $r->numerator();
-        //        $denominator = $r->denominator();
-        //
-        //        foreach (array_keys($powers) as $divisor) {
-        //            while (0 === $denominator % $divisor) {
-        //                $denominator /= $divisor;
-        //                ++$powers[$divisor];
-        //            }
-        //        }
-        //
-        //        if (1 !== $denominator) {
-        //            throw new ConversionException('Decimal division produces a non-terminating decimal');
-        //        }
-        //
-        //        $scale = max($powers);
-        //        $numerator *= (2 ** ($scale - $powers[2])) * (5 ** ($scale - $powers[5]));
 
         return [$result->value(), $result->scale()];
     }

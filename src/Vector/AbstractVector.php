@@ -7,9 +7,12 @@ namespace Guillaumetissier\Maths\Vector;
 abstract class AbstractVector implements VectorInterface, \JsonSerializable, \Stringable
 {
     /** @var float[] */
-    protected array $components;
+    protected array $components = [];
 
-    protected function __construct(array $components)
+    /**
+     * @param mixed[] $components
+     */
+    final protected function __construct(array $components)
     {
         if ([] === $components) {
             throw new \InvalidArgumentException('Vector cannot be empty.');
@@ -21,15 +24,18 @@ abstract class AbstractVector implements VectorInterface, \JsonSerializable, \St
             }
         }
 
-        $this->components = array_map('floatval', array_values($components));
+        $this->components = array_map(
+            static fn (mixed $value): float => is_scalar($value) ? floatval($value) : 0.0,
+            array_values($components)
+        );
     }
 
-    public static function fromArray(array $components): self
+    public static function fromArray(array $components): static
     {
         return new static($components);
     }
 
-    public static function zero(int $dimension): self
+    public static function zero(int $dimension): static
     {
         if ($dimension <= 0) {
             throw new \InvalidArgumentException('Dimension must be positive.');
@@ -52,6 +58,9 @@ abstract class AbstractVector implements VectorInterface, \JsonSerializable, \St
         return $this->components[$index];
     }
 
+    /**
+     * @return float[]
+     */
     public function toArray(): array
     {
         return $this->components;
@@ -80,7 +89,7 @@ abstract class AbstractVector implements VectorInterface, \JsonSerializable, \St
         }
 
         foreach ($this->components as $i => $value) {
-            if (abs($value - $other->components[$i]) > $epsilon) {
+            if (abs($value - $other->get($i)) > $epsilon) {
                 return false;
             }
         }
@@ -88,6 +97,9 @@ abstract class AbstractVector implements VectorInterface, \JsonSerializable, \St
         return true;
     }
 
+    /**
+     * @return float[]
+     */
     public function jsonSerialize(): array
     {
         return $this->components;
@@ -109,9 +121,9 @@ abstract class AbstractVector implements VectorInterface, \JsonSerializable, \St
         $this->assertSameDimension($other);
 
         return array_sum(array_map(
-            fn ($a, $b) => $a * $b,
+            fn (float $a, float $b) => $a * $b,
             $this->components,
-            $other->components
+            $other->toArray()
         ));
     }
 

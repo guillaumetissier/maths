@@ -12,11 +12,11 @@ class PolynomialParser
     /**
      * Parse une chaîne représentant un polynôme en tableau de coefficients.
      *
-     * @param string $string Polynôme sous forme de chaîne (ex: "2x^2 + 3x - 5")
+     * @param string $string Polynomial in the form : "2x^2 + 3x - 5"
      *
-     * @return array Coefficients indexés par degré [a0, a1, a2, ...] où P(x) = a0 + a1*x + a2*x² + ...
+     * @return array<RationalImmutable> Coefficients indexés par degré [a0, a1, a2, ...] où P(x) = a0 + a1*x + a2*x² + ...
      *
-     * @throws InvalidPolynomialException Si la syntaxe est invalide
+     * @throws InvalidPolynomialException if invalid syntax
      */
     public static function parse(string $string): array
     {
@@ -51,12 +51,15 @@ class PolynomialParser
 
     private static function normalize(string $string): string
     {
-        $string = preg_replace('/\s+/', '', $string);
+        $string = (string) preg_replace('/\s+/', '', $string);
         $string = str_replace([',', '**', '-', '++', 'X', '-x'], ['.', '^', '+-', '+', 'x', '-1x'], $string);
 
         return ltrim($string, '+');
     }
 
+    /**
+     * @return string[]
+     */
     private static function extractTerms(string $string): array
     {
         if (empty($string)) {
@@ -68,6 +71,11 @@ class PolynomialParser
     }
 
     /**
+     * @return array{
+     *     coefficient: RationalImmutable,
+     *     degree: int
+     * }
+     *
      * @throws InvalidPolynomialException
      */
     private static function parseTerm(string $term): array
@@ -87,7 +95,7 @@ class PolynomialParser
             throw new InvalidPolynomialException("Terme invalide: '$term'");
         }
 
-        $coefficient = null;
+        $coefficient = RationalImmutable::zero();
         if (!empty($matches[1])) {
             $coefficient = RationalImmutable::parse($matches[1]);
         } elseif (isset($matches[2])) {
