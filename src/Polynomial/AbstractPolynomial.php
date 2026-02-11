@@ -14,16 +14,34 @@ class AbstractPolynomial implements \Stringable, StringParsable, PolynomialInter
     protected array $coefficients;
 
     /**
-     * @param array<RationalInterface> $coefficients
+     * @param array<int> $integers
+     * @param bool       $inverted if true, then [4, 1, 2, 3, 0, 0] => 4x^5 + x^4 + 2x^3 + 3x^2
      */
-    final protected function __construct(array $coefficients)
+    public static function fromIntegers(array $integers, bool $inverted = true): static
     {
-        $this->coefficients = $coefficients;
+        $coefficients = array_map(
+            static fn (int $i): RationalInterface => RationalImmutable::of($i),
+            $integers
+        );
+
+        if ($inverted) {
+            $coefficients = array_reverse($coefficients);
+        }
+
+        return new static($coefficients);
     }
 
     public static function parse(string $value): static
     {
         return new static(PolynomialParser::parse($value));
+    }
+
+    /**
+     * @param array<RationalInterface> $coefficients
+     */
+    final protected function __construct(array $coefficients)
+    {
+        $this->coefficients = $coefficients;
     }
 
     public function deg(): int

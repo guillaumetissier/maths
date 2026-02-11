@@ -9,6 +9,16 @@ use PHPUnit\Framework\TestCase;
 
 class PolynomialTest extends TestCase
 {
+    public function testFromIntegers(): void
+    {
+        $this->assertSame('3x^3 + 2x^2 + x + 4', (string) Polynomial::fromIntegers([4, 1, 2, 3, 0, 0], false));
+    }
+
+    public function testFromIntegersInverted(): void
+    {
+        $this->assertSame('4x^5 + x^4 + 2x^3 + 3x^2', (string) Polynomial::fromIntegers([4, 1, 2, 3, 0, 0]));
+    }
+
     /**
      * @dataProvider dataAdd
      */
