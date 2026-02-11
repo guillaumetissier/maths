@@ -84,7 +84,7 @@ final class RationalImmutableTest extends TestCase
     /**
      * @dataProvider dataCompare
      */
-    public function testCompare(RationalImmutable $r, ComparableNumber $comparedTo, $expectedResult): void
+    public function testCompare(RationalImmutable $r, ComparableNumber $comparedTo, int $expectedResult): void
     {
         $this->assertSame($expectedResult, $r->compare($comparedTo));
     }

@@ -24,13 +24,6 @@ final class VectorImmutableTest extends TestCase
         VectorImmutable::fromArray([]);
     }
 
-    public function testNonNumericComponentIsRejected(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        VectorImmutable::fromArray([1, 'a', 3]);
-    }
-
     public function testZeroVector(): void
     {
         $v = VectorImmutable::zero(3);

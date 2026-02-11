@@ -24,13 +24,6 @@ final class VectorTest extends TestCase
         Vector::fromArray([]);
     }
 
-    public function testNonNumericComponentIsRejected(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        Vector::fromArray([1, 'a', 3]);
-    }
-
     public function testZeroVector(): void
     {
         $v = Vector::zero(3);

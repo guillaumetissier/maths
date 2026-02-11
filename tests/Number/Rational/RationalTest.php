@@ -69,7 +69,7 @@ final class RationalTest extends TestCase
     /**
      * @dataProvider dataCompare
      */
-    public function testCompare(Rational $r, ComparableNumber $comparedTo, $expectedResult): void
+    public function testCompare(Rational $r, ComparableNumber $comparedTo, int $expectedResult): void
     {
         $this->assertSame($expectedResult, $r->compare($comparedTo));
     }

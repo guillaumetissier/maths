@@ -10,6 +10,10 @@ use PHPUnit\Framework\TestCase;
 class PolynomialParserTest extends TestCase
 {
     /**
+     * @param array<int> $expected
+     *
+     * @throws InvalidPolynomialException
+     *
      * @dataProvider dataParse
      */
     public function testParse(string $input, array $expected): void
@@ -27,6 +31,9 @@ class PolynomialParserTest extends TestCase
         }
     }
 
+    /**
+     * @return array<string, array{string, array<int>}>
+     */
     public static function dataParse(): array
     {
         return [
@@ -56,6 +63,10 @@ class PolynomialParserTest extends TestCase
     }
 
     /**
+     * @param array{string, int[][]} $expected
+     *
+     * @throws InvalidPolynomialException
+     *
      * @dataProvider dataParseWithRationalCoefs
      */
     public function testParseWithRationalCoefs(string $input, array $expected): void
@@ -69,6 +80,9 @@ class PolynomialParserTest extends TestCase
         }
     }
 
+    /**
+     * @return array<string, array{string, int[][]}>
+     */
     public static function dataParseWithRationalCoefs(): array
     {
         return [

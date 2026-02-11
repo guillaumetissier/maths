@@ -144,6 +144,7 @@ final class MatrixTest extends TestCase
         ]);
 
         $json = json_encode($matrix);
+        $this->assertIsString($json);
         $this->assertJson($json);
         $this->assertSame([
             [1, 2.2],
